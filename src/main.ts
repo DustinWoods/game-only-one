@@ -1,5 +1,5 @@
 import './css/styles.css';
-import { Application, Container, Sprite, Texture } from 'pixi.js';
+import { Application, Sprite, Texture } from 'pixi.js';
 import { LevelState, tick } from './engine';
 import { Nouns, NounTextures,  generateNounTextures, NounKeys } from './nouns';
 
