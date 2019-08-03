@@ -46,7 +46,7 @@ export function createNounGraphics(text: string, color: number, radius: number, 
   const brt = new BaseRenderTexture({
     width: radius * 2,
     height: radius * 2,
-    scaleMode: SCALE_MODES.LINEAR,
+    scaleMode: SCALE_MODES.NEAREST,
     resolution: app.renderer.resolution,
   });
   const rt = new RenderTexture(brt);

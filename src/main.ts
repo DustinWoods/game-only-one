@@ -6,10 +6,10 @@ import { Nouns, NounTextures,  generateNounTextures, NounKeys } from './nouns';
 window.onload = (): void => {
 
   const app = new Application({
-    antialias: true,
+    antialias: false,
     transparent: false,
     autoDensity: true,
-    resolution: 2, // TODO: auto
+    resolution: 1, // TODO: auto
     resizeTo: window,
     backgroundColor: 0xffffff,
   });
