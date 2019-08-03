@@ -7,4 +7,5 @@ body {
 body > canvas {
   position: absolute;
   display: block;
+  image-rendering: crisp-edges;
 }

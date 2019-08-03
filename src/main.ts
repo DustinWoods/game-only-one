@@ -9,7 +9,7 @@ window.onload = (): void => {
     antialias: false,
     transparent: false,
     autoDensity: true,
-    resolution: 1, // TODO: auto
+    resolution: 0.5, // TODO: auto
     resizeTo: window,
     backgroundColor: 0xffffff,
   });

@@ -59,11 +59,10 @@ export function createNounGraphics(text: string, color: number, radius: number, 
   g.endFill();
   container.addChild(g);
 
-  const nameText = new Text(text);
+  const nameText = new Text(text, {fontSize: Math.floor(26 * (radius / NOUN_RADIUS) * 0.75)});
   nameText.x = radius;
   nameText.y = radius;
   nameText.anchor.set(0.5, 0.5);
-  nameText.scale.set(radius / 100);
   container.addChild(nameText);
 
   app.renderer.render(container, rt);
