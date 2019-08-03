@@ -43,8 +43,8 @@ window.onload = (): void => {
     });
   }
 
-  app.ticker.add((delta) => {
-    tick(state, delta);
-  });
+  setInterval(() => {
+    tick(state, 0.5);
+  }, 50);
 
 };
