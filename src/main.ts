@@ -44,12 +44,14 @@ window.onload = (): void => {
       }
     }
   });
-  app.renderer.plugins.interaction.on("mouseup", (e: interaction.InteractionEvent) => {
+  function cancelClickTarget(e: interaction.InteractionEvent) {
     if(clickTarget) {
       delete clickTarget.attractor;
     }
     clickTarget = undefined;
-  });
+  }
+  app.renderer.plugins.interaction.on("mouseup",cancelClickTarget);
+  app.renderer.plugins.interaction.on("pointerout", cancelClickTarget);
   app.renderer.plugins.interaction.on("mousemove", (e: interaction.InteractionEvent) => {
     mousePos[0] = e.data.global.x;
     mousePos[1] = e.data.global.y;
