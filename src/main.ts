@@ -4,7 +4,7 @@ import { LevelState, tick } from './engine';
 import { Nouns, NounTextures,  generateNounTextures, NounKeys, NounScales } from './nouns';
 import { Vector2, magnitude, subtract } from './vector-math';
 import { NounInstance } from './noun';
-import { NOUN_RADIUS } from './constants';
+import { NOUN_RADIUS, LEVEL_WIDTH, LEVEL_HEIGHT } from './constants';
 
 window.onload = (): void => {
 
@@ -13,7 +13,8 @@ window.onload = (): void => {
     transparent: false,
     autoDensity: true,
     resolution: 0.5, // TODO: auto
-    resizeTo: window,
+    width: LEVEL_WIDTH,
+    height: LEVEL_HEIGHT,
     backgroundColor: 0xffffff,
   });
 

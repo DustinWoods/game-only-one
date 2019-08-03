@@ -1,7 +1,7 @@
 import { NounInstance } from "./noun";
 import { multiply, add, subtract, isZeroLength, Vector2, magnitude, normalize, dot } from "./vector-math";
 import { NounScales } from "./nouns";
-import { NOUN_RADIUS, RESTITUTION_COEFFICIENT, BALL_FRICTION_COEFFICIENT, LEVEL_HEIGHT, LEVEL_WIDTH } from "./constants";
+import { NOUN_RADIUS, RESTITUTION_COEFFICIENT, BALL_FRICTION_COEFFICIENT, LEVEL_HEIGHT, LEVEL_WIDTH, MOVE_FRICTION_COEFFICIENT } from "./constants";
 
 export type LevelState = {
   instances: NounInstance[];
@@ -73,6 +73,12 @@ export function tick(currentState: LevelState, delta: number): LevelState {
     if(instance.position[1] + (NounScales[instance.name] || 1) * NOUN_RADIUS > LEVEL_HEIGHT) {
       instance.position[1] = LEVEL_HEIGHT - (NounScales[instance.name] || 1) * NOUN_RADIUS;
       instance.velocity[1] = -instance.velocity[1];
+    }
+
+    // Apply friction to velocity
+    instance.velocity = multiply(instance.velocity, MOVE_FRICTION_COEFFICIENT);
+    if(magnitude(instance.velocity) < 0.5) {
+      instance.velocity = [0,0];
     }
   }
 
