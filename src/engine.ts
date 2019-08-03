@@ -1,7 +1,7 @@
 import { NounInstance } from "./noun";
 import { multiply, add, subtract, isZeroLength, Vector2, magnitude, normalize, dot } from "./vector-math";
 import { NounScales } from "./nouns";
-import { NOUN_RADIUS, RESTITUTION_COEFFICIENT, BALL_FRICTION_COEFFICIENT } from "./constants";
+import { NOUN_RADIUS, RESTITUTION_COEFFICIENT, BALL_FRICTION_COEFFICIENT, LEVEL_HEIGHT, LEVEL_WIDTH } from "./constants";
 
 export type LevelState = {
   instances: NounInstance[];
@@ -56,6 +56,24 @@ export function tick(currentState: LevelState, delta: number): LevelState {
     const dVelocity = multiply(instance.velocity, delta);
     instance.position = add(instance.position, dVelocity);
     instance.graphic.position.set(...instance.position);
+
+    // Check if out of bounds
+    if(instance.position[0] - (NounScales[instance.name] || 1) * NOUN_RADIUS < 0) {
+      instance.position[0] = (NounScales[instance.name] || 1) * NOUN_RADIUS;
+      instance.velocity[0] = -instance.velocity[0];
+    }
+    if(instance.position[1] - (NounScales[instance.name] || 1) * NOUN_RADIUS < 0) {
+      instance.position[1] = (NounScales[instance.name] || 1) * NOUN_RADIUS;
+      instance.velocity[1] = -instance.velocity[1];
+    }
+    if(instance.position[0] + (NounScales[instance.name] || 1) * NOUN_RADIUS > LEVEL_WIDTH) {
+      instance.position[0] = LEVEL_WIDTH - (NounScales[instance.name] || 1) * NOUN_RADIUS;
+      instance.velocity[0] = -instance.velocity[0];
+    }
+    if(instance.position[1] + (NounScales[instance.name] || 1) * NOUN_RADIUS > LEVEL_HEIGHT) {
+      instance.position[1] = LEVEL_HEIGHT - (NounScales[instance.name] || 1) * NOUN_RADIUS;
+      instance.velocity[1] = -instance.velocity[1];
+    }
   }
 
   // Check collision with each other
