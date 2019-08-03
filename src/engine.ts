@@ -43,6 +43,15 @@ export function tick(currentState: LevelState, delta: number): LevelState {
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
 
+    // Any attractors?
+    if(instance.attractor) {
+      const d: Vector2 = subtract(instance.attractor, instance.position);
+      const md = Math.max(0, Math.min(magnitude(d) - (NounScales[instance.name] || 1) * NOUN_RADIUS * 0.5, 150));
+      if(md > 0) {
+        instance.velocity = multiply(normalize(d), md);
+      }
+    }
+
     // Apply velocities
     const dVelocity = multiply(instance.velocity, delta);
     instance.position = add(instance.position, dVelocity);
