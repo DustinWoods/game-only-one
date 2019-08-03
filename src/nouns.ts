@@ -1,6 +1,8 @@
 import { Graphics, Text, Texture, BaseRenderTexture, RenderTexture, SCALE_MODES, Application, Container } from "pixi.js";
 import { NOUN_RADIUS } from "./constants";
 
+export type NounKeys = Extract<keyof typeof Nouns, string>;
+
 export enum Nouns {
   puddle = "puddle",
   pond = "pond",
@@ -8,30 +10,34 @@ export enum Nouns {
   forest = "forest",
   inferno = "inferno",
   steam = "steam",
+  negativeone = "-1",
+  positiveone = "+1",
 }
 
-export const NounColors: {[key in Nouns]: number} = {
+export const NounColors: {[key in NounKeys]: number} = {
   puddle: 0x0000ff,
   pond: 0x0000ff,
   fire: 0xffaa00,
   forest: 0x00ff00,
   inferno: 0xff0000,
   steam: 0xaaaaaa,
+  negativeone: 0xcccccc,
+  positiveone: 0xcccccc,
 }
 
-export const NounScales: {[key in Nouns]?: number} = {
+export const NounScales: {[key in NounKeys]?: number} = {
   pond: 2,
   forest: 2,
   inferno: 2,
 }
 
-export type NounTextures = {[key in Nouns]: RenderTexture};
+export type NounTextures = {[key in NounKeys]: RenderTexture};
 
 export function generateNounTextures(app: Application): NounTextures {
-  return Object.keys(Nouns).reduce((o, n: Nouns) => {
+  return Object.keys(Nouns).reduce((o, n: NounKeys) => {
     return {
       ...o,
-      [n]: createNounGraphics(n, NounColors[n], NOUN_RADIUS * (NounScales[n] || 1), app)
+      [n]: createNounGraphics(Nouns[n].toLocaleUpperCase(), NounColors[n], NOUN_RADIUS * (NounScales[n] || 1), app)
     }
   }, {}) as NounTextures;
 }

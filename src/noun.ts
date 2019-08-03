@@ -1,9 +1,9 @@
 import { Vector2 } from "./vector-math";
-import { Nouns } from "./nouns";
+import { Nouns, NounKeys } from "./nouns";
 import { Sprite } from "pixi.js";
 
 export interface NounInstance {
-  name: keyof typeof Nouns;
+  name: NounKeys;
   velocity: Vector2;
   position: Vector2;
   graphic: Sprite;
