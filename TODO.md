@@ -1,3 +1,4 @@
+ - [ ] Don't activate event unless user-initiated
  - [ ] Menu
  - [ ] Level management
  - [ ] Button for undo
