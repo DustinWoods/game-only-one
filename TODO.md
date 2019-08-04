@@ -1,2 +1,8 @@
- - [ ] Click + drag
- - [ ] Trigger events on collision
+ - [ ] Menu
+ - [ ] Level management
+ - [ ] Button for undo
+ - [ ] Button for restart
+ - [ ] Make levels
+ - [x] Undo actions
+ - [x] Click + drag
+ - [x] Trigger events on collision
