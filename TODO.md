@@ -3,6 +3,8 @@
  - [ ] Button for undo
  - [ ] Button for restart
  - [ ] Make levels
+ - [ ] Troubleshoot mobile touch
+ - [ ] Publish on itch
  - [x] Undo actions
  - [x] Click + drag
  - [x] Trigger events on collision
