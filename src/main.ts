@@ -81,6 +81,7 @@ window.onload = (): void => {
   function cancelClickTarget(e: interaction.InteractionEvent) {
     if(clickTarget) {
       delete clickTarget.attractor;
+      clickTarget.releaseCooldown = 1;
     }
     clickTarget = undefined;
   }

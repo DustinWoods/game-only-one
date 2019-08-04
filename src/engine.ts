@@ -65,6 +65,13 @@ export function tick(currentState: LevelState, delta: number): LevelState {
       }
     }
 
+    if(instance.releaseCooldown) {
+      instance.releaseCooldown -= 0.5;
+      if(instance.releaseCooldown <= 0) {
+        delete instance.releaseCooldown
+      }
+    }
+
     // Any attractors?
     if(instance.attractor) {
       const d: Vector2 = subtract(instance.attractor, instance.position);
@@ -127,8 +134,8 @@ export function tick(currentState: LevelState, delta: number): LevelState {
         }
 
         // > 0
-        const collisionAmount = minDistance(childA, childB) - magnitude(normal);
-        if(!childA.cooldown && !childB.cooldown && collisionAmount > COLLISION_EVENT_THRESHOLD) {
+        const intent = childA.releaseCooldown || childB.releaseCooldown;
+        if(!childA.cooldown && !childB.cooldown && intent) {
           const newNouns = getCollisionEvents(childA, childB);
           if(newNouns) {
             childA.cooldown = 1;

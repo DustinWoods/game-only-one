@@ -5,6 +5,7 @@ import { Sprite } from "pixi.js";
 export interface NounInstance {
   name: NounKeys;
   attractor?: Vector2;
+  releaseCooldown?: number;
   velocity: Vector2;
   position: Vector2;
   graphic?: Sprite;
