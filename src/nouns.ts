@@ -4,6 +4,14 @@ import { NOUN_RADIUS } from "./constants";
 export type NounKeys = Extract<keyof typeof Nouns, string>;
 
 export enum Nouns {
+  the = "the",
+  end = "end",
+  you = "you",
+  fun = "fun",
+  heart = "❤",
+  obsession = "obsession",
+  bigobsession = "obsession",
+
   A = "A",
   B = "B",
   C = "C",
@@ -11,6 +19,12 @@ export enum Nouns {
 }
 
 export const NounColors: {[key in NounKeys]?: number} = {
+  heart: 0xaa5555,
+  the: 0xffffff,
+  end: 0xffffff,
+  you: 0xccccff,
+  obsession: 0x888888,
+  bigobsession: 0x777777,
   A: 0xff3300,
   B: 0x00aa00,
   C: 0x4400aa,
@@ -18,7 +32,9 @@ export const NounColors: {[key in NounKeys]?: number} = {
 }
 
 export const NounScales: {[key in NounKeys]?: number} = {
-
+  bigobsession: 2,
+  the: 2,
+  end: 2,
 }
 
 export type NounTextures = {[key in NounKeys]: RenderTexture};

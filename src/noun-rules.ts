@@ -12,7 +12,26 @@ export type Rule = [
 ];
 
 export const GAME_RULES: Rule[] = [
-
+  [
+    ["the", "end"],
+    ["you", "fun"]
+  ],
+  [
+    ["you", "fun"],
+    ["you", "fun", "fun", "heart"]
+  ],
+  [
+    ["heart", "heart"],
+    ["obsession"]
+  ],
+  [
+    ["obsession", "obsession"],
+    ["bigobsession"]
+  ],
+  [
+    ["bigobsession", "bigobsession"],
+    ["bigobsession"]
+  ],
   [
     [
       "A",

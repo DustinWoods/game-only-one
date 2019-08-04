@@ -136,9 +136,9 @@ window.onload = (): void => {
   levelText.position.set(LEVEL_WIDTH/2, 15);
   levelContainer.addChild(levelText);
 
-  const instructionText = new Text("WIN STATE: ONE WORD LEFT");
+  const instructionText = new Text("GOAL: ONLY ONE WORD");
   instructionText.anchor.set(1, 1);
-  instructionText.position.set(LEVEL_WIDTH-15, LEVEL_HEIGHT-15);
+  instructionText.position.set(LEVEL_WIDTH-15, LEVEL_HEIGHT-10);
   levelContainer.addChild(instructionText);
 
   function loadLevel(level: Level) {
@@ -155,12 +155,13 @@ window.onload = (): void => {
         velocity: [0,0],
       });
     });
-    levelText.text = `LEVEL ${LEVELS.indexOf(level) + 1} OF ${LEVELS.length}: ${level.name}`;
+    //levelText.text = `LEVEL ${LEVELS.indexOf(level) + 1} OF ${LEVELS.length}: ${level.name}`;
     app.stage.addChild(levelContainer);
     levelContainer.alpha = 1;
   }
 
   let currentLevel = 0;
+  let gameOver = false;
   loadLevel(LEVELS[currentLevel]);
 
   function completeLevel() {
@@ -168,8 +169,19 @@ window.onload = (): void => {
       currentLevel += 1;
       loadLevel(LEVELS[currentLevel]);
     } else {
+      gameOver = true;
       // GAME OVER!
-      app.stage.removeChild(levelContainer);
+      instructionText
+      levelContainer.removeChild(instructionText);
+      levelContainer.removeChild(undoButton);
+      levelContainer.removeChild(restartButton);
+      loadLevel({
+        name: '',
+        nouns: [
+          ["the", [-96, 0]],
+          ["end", [96, 0]]
+        ]
+      })
     }
   }
 
