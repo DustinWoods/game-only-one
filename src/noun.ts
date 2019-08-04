@@ -7,5 +7,6 @@ export interface NounInstance {
   attractor?: Vector2;
   velocity: Vector2;
   position: Vector2;
-  graphic: Sprite;
+  graphic?: Sprite;
+  cooldown?: number;
 }

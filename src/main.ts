@@ -1,5 +1,5 @@
 import './css/styles.css';
-import { Application, Sprite, Texture, interaction } from 'pixi.js';
+import { Application, Sprite, Texture, interaction, Container } from 'pixi.js';
 import { LevelState, tick } from './engine';
 import { Nouns, NounTextures,  generateNounTextures, NounKeys, NounScales } from './nouns';
 import { Vector2, magnitude, subtract } from './vector-math';
@@ -12,7 +12,7 @@ window.onload = (): void => {
     antialias: false,
     transparent: false,
     autoDensity: true,
-    resolution: 0.5, // TODO: auto
+    resolution: 2, // TODO: auto
     width: LEVEL_WIDTH,
     height: LEVEL_HEIGHT,
     backgroundColor: 0xffffff,
@@ -22,10 +22,12 @@ window.onload = (): void => {
 
   const textures: NounTextures = generateNounTextures(app);
 
-  function createTextureSprite(t: Texture): Sprite {
+  function createTextureSprite(stage: Container, t: Texture): Sprite {
     const s = new Sprite(t);
+    s.cursor = 'pointer';
+    s.interactive = true;
     s.anchor.set(0.5, 0.5);
-    app.stage.addChild(s);
+    stage.addChild(s);
     return s;
   }
 
@@ -42,6 +44,7 @@ window.onload = (): void => {
         mousePos[0] = e.data.global.x;
         mousePos[1] = e.data.global.y;
         clickTarget.attractor = mousePos;
+        saveState();
       }
     }
   });
@@ -52,7 +55,6 @@ window.onload = (): void => {
     clickTarget = undefined;
   }
   app.renderer.plugins.interaction.on("mouseup",cancelClickTarget);
-  app.renderer.plugins.interaction.on("pointerout", cancelClickTarget);
   app.renderer.plugins.interaction.on("mousemove", (e: interaction.InteractionEvent) => {
     mousePos[0] = e.data.global.x;
     mousePos[1] = e.data.global.y;
@@ -61,20 +63,79 @@ window.onload = (): void => {
   let state: LevelState = {
     instances: []
   };
-  // Demo initial state
-  for (let i = 0; i < 10; i++) {
-    const nounName: NounKeys = Object.keys(Nouns)[Math.floor(Object.keys(Nouns).length*Math.random())] as NounKeys;
 
-    state.instances.push({
-      name: nounName,
-      position: [Math.random() * 1000, Math.random() * 1000],
-      velocity: [0.5 - Math.random(), 0.5 - Math.random()],
-      graphic: createTextureSprite(textures[nounName]),
-    });
+  const stateHistory: Array<LevelState> = [];
+
+  function cleanState(state: LevelState): LevelState {
+    return {
+      instances: state.instances.map((o: NounInstance) => ({
+        name: o.name,
+        velocity: o.velocity,
+        position: o.position,
+        cooldown: o.cooldown,
+      }))
+    }
   }
+
+  function saveState() {
+    stateHistory.push(cleanState(state));
+  }
+
+  function loadState() {
+    const ns = stateHistory.pop();
+    if(ns) {
+      state.instances.forEach(({graphic}) => {
+        if(graphic) app.stage.removeChild(graphic);
+      })
+      state = ns;
+    }
+  }
+
+  window.addEventListener(
+    "keyup", (e) => {
+      if(e.key === "z") {
+        console.log("loaded");
+        loadState();
+      }
+    }, false
+  );
+
+  // Demo initial state
+
+  [
+    // "A",
+    // "A",
+    // "A",
+    // "A",
+    "A",
+    "A",
+    "A",
+    "A",
+    "A",
+    "A",
+
+  ].forEach((k: NounKeys) => {
+    state.instances.push({
+      name: k,
+      position: [Math.random() * 1000, Math.random() * 1000],
+      velocity: [2 - Math.random() * 4, 2 - Math.random() * 4],
+    });
+  });
 
   setInterval(() => {
     tick(state, 0.5);
+    for (let i = 0; i < state.instances.length; i++) {
+      const instance = state.instances[i];
+      if(!instance.graphic) {
+        instance.graphic = createTextureSprite(app.stage, textures[instance.name]);
+      }
+      if(instance.attractor) {
+        instance.graphic.alpha = 0.6;
+      } else if(instance.graphic.alpha !== 1) {
+        instance.graphic.alpha = 1;
+      }
+      instance.graphic.position.set(...instance.position);
+    }
   }, 50);
 
 };
