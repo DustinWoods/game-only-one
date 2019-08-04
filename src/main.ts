@@ -1,7 +1,7 @@
 import './css/styles.css';
 import { Application, Sprite, Texture, interaction, Container } from 'pixi.js';
 import { LevelState, tick } from './engine';
-import { Nouns, NounTextures,  generateNounTextures, NounKeys, NounScales } from './nouns';
+import { NounTextures,  generateNounTextures, NounKeys, NounScales } from './nouns';
 import { Vector2, magnitude, subtract } from './vector-math';
 import { NounInstance } from './noun';
 import { NOUN_RADIUS, LEVEL_WIDTH, LEVEL_HEIGHT } from './constants';
@@ -20,6 +20,9 @@ window.onload = (): void => {
 
   document.body.appendChild(app.view);
 
+
+
+
   const textures: NounTextures = generateNounTextures(app);
 
   function createTextureSprite(stage: Container, t: Texture): Sprite {
@@ -31,34 +34,8 @@ window.onload = (): void => {
     return s;
   }
 
-  const mousePos: Vector2 = [0,0]
-  let clickTarget: NounInstance | undefined = undefined;
 
-  app.stage.interactive = true;
-  app.renderer.plugins.interaction.on("mousedown", (e: interaction.InteractionEvent) => {
-    if(e.type === "mousedown") {
-      clickTarget = state.instances.find((n: NounInstance) => {
-        return magnitude(subtract([e.data.global.x, e.data.global.y], n.position)) <= (NOUN_RADIUS * (NounScales[n.name] || 1));
-      });
-      if(clickTarget) {
-        mousePos[0] = e.data.global.x;
-        mousePos[1] = e.data.global.y;
-        clickTarget.attractor = mousePos;
-        saveState();
-      }
-    }
-  });
-  function cancelClickTarget(e: interaction.InteractionEvent) {
-    if(clickTarget) {
-      delete clickTarget.attractor;
-    }
-    clickTarget = undefined;
-  }
-  app.renderer.plugins.interaction.on("mouseup",cancelClickTarget);
-  app.renderer.plugins.interaction.on("mousemove", (e: interaction.InteractionEvent) => {
-    mousePos[0] = e.data.global.x;
-    mousePos[1] = e.data.global.y;
-  });
+
 
   let state: LevelState = {
     instances: []
@@ -91,14 +68,46 @@ window.onload = (): void => {
     }
   }
 
+  const mousePos: Vector2 = [0,0]
+  let clickTarget: NounInstance | undefined = undefined;
+
+  app.stage.interactive = true;
+  app.renderer.plugins.interaction.on("pointerdown", (e: interaction.InteractionEvent) => {
+
+    if(e.type === "mousedown") {
+      clickTarget = state.instances.find((n: NounInstance) => {
+        return magnitude(subtract([e.data.global.x, e.data.global.y], n.position)) <= (NOUN_RADIUS * (NounScales[n.name] || 1));
+      });
+      if(clickTarget) {
+        mousePos[0] = e.data.global.x;
+        mousePos[1] = e.data.global.y;
+        clickTarget.attractor = mousePos;
+        saveState();
+      }
+    }
+  });
+  function cancelClickTarget(e: interaction.InteractionEvent) {
+    if(clickTarget) {
+      delete clickTarget.attractor;
+    }
+    clickTarget = undefined;
+  }
+  app.renderer.plugins.interaction.on("pointerup",cancelClickTarget);
+  app.renderer.plugins.interaction.on("pointermove", (e: interaction.InteractionEvent) => {
+    mousePos[0] = e.data.global.x;
+    mousePos[1] = e.data.global.y;
+  });
+
   window.addEventListener(
     "keyup", (e) => {
       if(e.key === "z") {
-        console.log("loaded");
         loadState();
       }
     }, false
   );
+
+
+
 
   // Demo initial state
 
