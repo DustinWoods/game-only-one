@@ -138,10 +138,12 @@ export function tick(currentState: LevelState, delta: number): LevelState {
             toRemove.push(j);
             // Create newNouns
             for (let ni = 0; ni < newNouns.length; ni++) {
+              const offsetRadian = Math.PI * 2 * (ni / newNouns.length);
+              const offsetSpawn: Vector2 = [Math.cos(offsetRadian), Math.sin(offsetRadian)];
               toAdd.push({
                 name: newNouns[ni],
                 velocity: [0, 0],
-                position: spawnLocation,
+                position: add(spawnLocation, multiply(offsetSpawn,10)),
                 cooldown: 1,
               });
             }

@@ -122,7 +122,7 @@ window.onload = (): void => {
     });
   });
 
-  setInterval(() => {
+  app.ticker.add(() => {
     tick(state, 0.5);
     for (let i = 0; i < state.instances.length; i++) {
       const instance = state.instances[i];
@@ -136,6 +136,6 @@ window.onload = (): void => {
       }
       instance.graphic.position.set(...instance.position);
     }
-  }, 50);
+  });
 
 };
