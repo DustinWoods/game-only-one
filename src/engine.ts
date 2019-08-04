@@ -134,7 +134,8 @@ export function tick(currentState: LevelState, delta: number): LevelState {
         }
 
         // > 0
-        const intent = childA.releaseCooldown || childB.releaseCooldown;
+        const collisionAmount = minDistance(childA, childB) - magnitude(normal);
+        const intent = collisionAmount > COLLISION_EVENT_THRESHOLD && (childA.releaseCooldown || childB.releaseCooldown);
         if(!childA.cooldown && !childB.cooldown && intent) {
           const newNouns = getCollisionEvents(childA, childB);
           if(newNouns) {

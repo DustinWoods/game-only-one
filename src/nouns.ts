@@ -8,27 +8,37 @@ export enum Nouns {
   end = "end",
   you = "you",
   fun = "fun",
-  heart = "❤",
+  love = "love",
   obsession = "obsession",
   bigobsession = "obsession",
 
-  A = "A",
-  B = "B",
-  C = "C",
-  D = "D",
+  // colors
+  red = "red",
+  green = "green",
+  blue = "blue",
+  grape = "grape",
+  banana = "banana",
+  ice = "ice",
+  scissors = "scissors",
+  double = "double",
+
 }
 
 export const NounColors: {[key in NounKeys]?: number} = {
-  heart: 0xaa5555,
+  love: 0xaa5555,
   the: 0xffffff,
   end: 0xffffff,
   you: 0xccccff,
   obsession: 0x888888,
   bigobsession: 0x777777,
-  A: 0xff3300,
-  B: 0x00aa00,
-  C: 0x4400aa,
-  D: 0x0044cc,
+
+  red: 0xff4444,
+  green: 0x44ff00,
+  blue: 0x4444ff,
+  grape: 0xff44ff,
+  banana: 0xffff44,
+  ice: 0x44ffff,
+
 }
 
 export const NounScales: {[key in NounKeys]?: number} = {
