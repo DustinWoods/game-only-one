@@ -121,10 +121,8 @@ export function tick(currentState: LevelState, delta: number): LevelState {
         const normal = subtract(childA.position, childB.position);
         if(isZeroLength(normal)) {
           // uh oh! We're in the same spot. Let's use [1,0] for normal
-          //bounceColliders(childA, childB, [1,0]);
           moveColliders(childA, childB, [1,0]);
         } else {
-          //bounceColliders(childA, childB, normal);
           moveColliders(childA, childB, normal);
         }
 
