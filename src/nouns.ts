@@ -4,31 +4,21 @@ import { NOUN_RADIUS } from "./constants";
 export type NounKeys = Extract<keyof typeof Nouns, string>;
 
 export enum Nouns {
-  puddle = "puddle",
-  pond = "pond",
-  fire = "fire",
-  forest = "forest",
-  inferno = "inferno",
-  steam = "steam",
-  negativeone = "-1",
-  positiveone = "+1",
+  A = "A",
+  B = "B",
+  C = "C",
+  D = "D",
 }
 
-export const NounColors: {[key in NounKeys]: number} = {
-  puddle: 0x0000ff,
-  pond: 0x0000ff,
-  fire: 0xffaa00,
-  forest: 0x00ff00,
-  inferno: 0xff0000,
-  steam: 0xaaaaaa,
-  negativeone: 0xcccccc,
-  positiveone: 0xcccccc,
+export const NounColors: {[key in NounKeys]?: number} = {
+  A: 0xff3300,
+  B: 0x00aa00,
+  C: 0x4400aa,
+  D: 0x0044cc,
 }
 
 export const NounScales: {[key in NounKeys]?: number} = {
-  pond: 2,
-  forest: 2,
-  inferno: 2,
+
 }
 
 export type NounTextures = {[key in NounKeys]: RenderTexture};
@@ -37,7 +27,7 @@ export function generateNounTextures(app: Application): NounTextures {
   return Object.keys(Nouns).reduce((o, n: NounKeys) => {
     return {
       ...o,
-      [n]: createNounGraphics(Nouns[n].toLocaleUpperCase(), NounColors[n], NOUN_RADIUS * (NounScales[n] || 1), app)
+      [n]: createNounGraphics(Nouns[n].toLocaleUpperCase(), NounColors[n] || 0xdddddd, NOUN_RADIUS * (NounScales[n] || 1), app)
     }
   }, {}) as NounTextures;
 }

@@ -1,4 +1,4 @@
-import { Nouns as N } from "./nouns";
+import { NounKeys as N } from "./nouns";
 
 export type NounCollection = Array<N>;
 
@@ -12,24 +12,66 @@ export type Rule = [
 ];
 
 export const GAME_RULES: Rule[] = [
+
   [
-    [N.puddle, N.puddle],
-    [N.pond],
+    [
+      "A",
+      "A"
+    ],
+    [
+      "B"
+    ]
   ],
   [
-    [N.fire, N.forest],
-    [N.inferno],
+    [
+      "A",
+      "B"
+    ],
+    [
+      "C"
+    ]
   ],
   [
-    [N.fire, N.puddle],
-    [N.fire, N.steam],
+    [
+      "B",
+      "B"
+    ],
+    [
+      "A",
+      "A",
+      "A",
+      "A"
+    ]
   ],
   [
-    [N.fire, N.pond],
-    [],
+    [
+      "A",
+      "C"
+    ],
+    [
+      "A",
+      "A",
+      "A",
+      "A",
+      "A"
+    ]
   ],
   [
-    [N.inferno, N.pond],
-    [N.steam, N.inferno, N.pond],
+    [
+      "C",
+      "B",
+    ],
+    [
+      "D",
+    ]
+  ],
+  [
+    [
+      "C",
+      "C",
+    ],
+    [
+
+    ]
   ]
 ];
