@@ -1,5 +1,5 @@
 import { NounInstance } from "./noun";
-import { multiply, add, subtract, isZeroLength, Vector2, magnitude, normalize, dot } from "./vector-math";
+import { multiply, add, subtract, isZeroLength, Vector2, magnitude, normalize, dot, distance } from "./vector-math";
 import { NounScales } from "./nouns";
 import { NOUN_RADIUS, RESTITUTION_COEFFICIENT, BALL_FRICTION_COEFFICIENT, LEVEL_HEIGHT, LEVEL_WIDTH, MOVE_FRICTION_COEFFICIENT, COLLISION_EVENT_THRESHOLD, MAX_VELOCITY } from "./constants";
 import { GAME_RULES, NounCollection } from "./noun-rules";
@@ -58,6 +58,10 @@ export function tick(currentState: LevelState, delta: number): LevelState {
   for (let i = 0; i < instances.length; i++) {
     const instance = instances[i];
 
+    if(instance.dragTo) {
+      delete instance.dragTo;
+    }
+
     if(instance.cooldown) {
       instance.cooldown -= 0.1 * delta;
       if(instance.cooldown <= 0) {
@@ -75,7 +79,7 @@ export function tick(currentState: LevelState, delta: number): LevelState {
     // Any attractors?
     if(instance.attractor) {
       const d: Vector2 = subtract(instance.attractor, instance.position);
-      const md = Math.max(0, Math.min(magnitude(d) - (NounScales[instance.name] || 1) * NOUN_RADIUS * 0.5, MAX_VELOCITY));
+      const md = Math.max(0, Math.min(magnitude(d) - (NounScales[instance.name] || 1) * NOUN_RADIUS * 0.25, MAX_VELOCITY));
       if(md > 0) {
         instance.velocity = multiply(normalize(d), md);
       }
@@ -115,9 +119,16 @@ export function tick(currentState: LevelState, delta: number): LevelState {
 
   // Check collision with each other
   for (let i = 0; i < instances.length; i++) {
-    if(instances[i].attractor) continue;
+    if(toRemove.indexOf(i) !== -1) {
+      continue;
+    }
+    const instanceI = instances[i];
     for (let j = i + 1; j < instances.length; j++) {
-      if(instances[j].attractor) continue;
+      if(toRemove.indexOf(j) !== -1) {
+        continue;
+      }
+      const instanceJ = instances[j];
+
       const childA = instances[i];
       const childB = instances[j];
       const dxSq = Math.pow(childA.position[0] - childB.position[0], 2);
@@ -125,7 +136,56 @@ export function tick(currentState: LevelState, delta: number): LevelState {
       const drSq = Math.pow(minDistance(childA, childB), 2);
       if(dxSq + dySq < drSq) {
         // Collision!
+
         const normal = subtract(childA.position, childB.position);
+        // > 0
+        const collisionAmount = minDistance(childA, childB) - magnitude(normal);
+        const intent = collisionAmount > COLLISION_EVENT_THRESHOLD;
+
+        const newNouns = getCollisionEvents(childA, childB);
+
+        if(instanceI.attractor) {
+          if(intent && newNouns) {
+            if(instanceI.dragTo && distance(instanceI.position, instanceJ.position) < distance(instanceI.dragTo.position, instanceJ.position)) {
+              instanceI.dragTo = instanceJ;
+            } else if(!instanceI.dragTo) {
+              instanceI.dragTo = instanceJ;
+            }
+          }
+          continue;
+        }
+
+        if(instanceJ.attractor) {
+          if(intent && newNouns) {
+            if(instanceJ.dragTo && distance(instanceJ.position, instanceI.position) < distance(instanceJ.dragTo.position, instanceI.position)) {
+              instanceJ.dragTo = instanceI;
+            } else if(!instanceJ.dragTo) {
+              instanceJ.dragTo = instanceI;
+            }
+          }
+          continue;
+        }
+
+        if(intent && !childA.cooldown && !childB.cooldown && newNouns && (childA.releaseCooldown || childB.releaseCooldown)) {
+          childA.cooldown = 1;
+          childB.cooldown = 1;
+
+          const spawnLocation: Vector2 = add(childB.position, multiply(subtract(childA.position, childB.position), 0.5));
+          toRemove.push(i);
+          toRemove.push(j);
+          // Create newNouns
+          for (let ni = 0; ni < newNouns.length; ni++) {
+            const offsetRadian = Math.PI * 2 * (ni / newNouns.length);
+            const offsetSpawn: Vector2 = [Math.cos(offsetRadian), Math.sin(offsetRadian)];
+            toAdd.push({
+              name: newNouns[ni],
+              velocity: [0, 0],
+              position: add(spawnLocation, multiply(offsetSpawn,10)),
+              cooldown: 1,
+            });
+          }
+        }
+
         if(isZeroLength(normal)) {
           // uh oh! We're in the same spot. Let's use [1,0] for normal
           moveColliders(childA, childB, [1,0]);
@@ -133,30 +193,6 @@ export function tick(currentState: LevelState, delta: number): LevelState {
           moveColliders(childA, childB, normal);
         }
 
-        // > 0
-        const collisionAmount = minDistance(childA, childB) - magnitude(normal);
-        const intent = collisionAmount > COLLISION_EVENT_THRESHOLD && (childA.releaseCooldown || childB.releaseCooldown);
-        if(!childA.cooldown && !childB.cooldown && intent) {
-          const newNouns = getCollisionEvents(childA, childB);
-          if(newNouns) {
-            childA.cooldown = 1;
-            childB.cooldown = 1;
-            const spawnLocation: Vector2 = add(childB.position, multiply(subtract(childA.position, childB.position), 0.5));
-            toRemove.push(i);
-            toRemove.push(j);
-            // Create newNouns
-            for (let ni = 0; ni < newNouns.length; ni++) {
-              const offsetRadian = Math.PI * 2 * (ni / newNouns.length);
-              const offsetSpawn: Vector2 = [Math.cos(offsetRadian), Math.sin(offsetRadian)];
-              toAdd.push({
-                name: newNouns[ni],
-                velocity: [0, 0],
-                position: add(spawnLocation, multiply(offsetSpawn,10)),
-                cooldown: 1,
-              });
-            }
-          }
-        }
       }
     }
   }

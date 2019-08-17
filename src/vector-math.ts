@@ -22,6 +22,10 @@ export function subtract([ x1, y1 ]: Vector2, [ x2, y2 ]: Vector2): Vector2 {
   return [ x1 - x2, y1 - y2 ];
 }
 
+export function distance([ x1, y1 ]: Vector2, [ x2, y2 ]: Vector2): number {
+  return magnitude(subtract([x1, y1], [x2, y2]));
+}
+
 export function magnitude([ x, y ]: Vector2): number {
   if(x === 0 && y === 0) return 0;
   if(x === 0) return y;

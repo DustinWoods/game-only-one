@@ -22,6 +22,7 @@ window.onload = (): void => {
   document.body.appendChild(app.view);
 
   const levelContainer = new Container();
+  levelContainer.sortableChildren = true;
 
   // Generate textures for each noun
   const textures: NounTextures = generateNounTextures(app);
@@ -75,11 +76,12 @@ window.onload = (): void => {
   // Store current mouse/pointer position
   const mousePos: Vector2 = [0,0]
   let clickTarget: NounInstance | undefined = undefined;
+  let clickDragTarget: NounInstance | undefined = undefined;
 
   // Enable interactions
   levelContainer.interactive = true;
   function cancelClickTarget(e: interaction.InteractionEvent) {
-    if(clickTarget) {
+    if(clickTarget && clickTarget.attractor) {
       delete clickTarget.attractor;
       clickTarget.releaseCooldown = 1;
     }
@@ -210,17 +212,37 @@ window.onload = (): void => {
         completeLevel();
       }
     } else {
+      clickDragTarget = undefined;
       tick(state, 0.5);
+      if(clickTarget && clickTarget.dragTo) {
+        clickDragTarget = clickTarget.dragTo;
+      }
       for (let i = 0; i < state.instances.length; i++) {
         const instance = state.instances[i];
         if(!instance.graphic) {
           instance.graphic = createTextureSprite(levelContainer, textures[instance.name]);
         }
-        if(instance.attractor) {
-          instance.graphic.alpha = 0.6;
-        } else if(instance.graphic.alpha !== 1) {
+        if(clickTarget && !instance.attractor) {
+          instance.graphic.zIndex = 0;
+          if(instance !== clickDragTarget) {
+            instance.graphic.alpha = 0.4;
+          } else {
+            instance.graphic.alpha = 1;
+          }
+        }
+
+        if(clickTarget && instance.attractor) {
+          instance.graphic.zIndex = 1;
+          instance.graphic.alpha = 1;
+          if(instance.dragTo && instance.dragTo.graphic) {
+            instance.dragTo.graphic.alpha = 1;
+          }
+        }
+
+        if(!clickTarget) {
           instance.graphic.alpha = 1;
         }
+
         instance.graphic.position.set(...instance.position);
       }
       checkWinState();
